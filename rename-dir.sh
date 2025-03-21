@@ -22,7 +22,7 @@ if [[ ! -d "$parent_dir_path" ]]; then
 fi
 
 # Iterate over the directories in the parent directory
-for dir_path in "$parent_dir_path"/*/; do
+for dir_path in "$parent_dir_path"*/; do
   # Get the directory name
   dir_name=$(basename "$dir_path")
 
