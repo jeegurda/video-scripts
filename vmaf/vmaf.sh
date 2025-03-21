@@ -18,10 +18,7 @@ out_json="vmaf-log-${name}.json"
 out_txt="vmaf-data-${name}.txt"
 out_png="plot-${name}.png"
 
-win_file1=$(cygpath -w "$file1")
-win_file2=$(cygpath -w "$file2")
-
-ffmpeg -i "$win_file1" -i "$win_file2" -ss $start1 -t $duration -lavfi libvmaf=model="path=vmaf_v0.6.1.json:log_path=${out_json}:log_fmt=json" -f null -
+ffmpeg -i "$file1" -i "$file2" -ss $start1 -t $duration -lavfi libvmaf=model="path=vmaf_v0.6.1.json:log_path=${out_json}:log_fmt=json" -f null -
 
 jq -r '.frames[] | "\(.frameNum) \(.metrics.vmaf)"' "$out_json" >"$out_txt"
 

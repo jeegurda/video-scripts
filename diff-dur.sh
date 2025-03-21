@@ -15,9 +15,6 @@ for file1 in "$dir1"/*; do
   file2=$(find "$dir2" -name "$file2name" -print -quit)
 
   if [ -f "$file2" ]; then
-    # win_file1=$(cygpath -w "$file1")
-    # win_file2=$(cygpath -w "$file2")
-
     duration1=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file1")
     duration2=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file2")
     echo "Comparing $duration1 and $duration2..."
