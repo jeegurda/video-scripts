@@ -1,1 +1,6 @@
 node_modules/
+
+# vmaf.sh outputs
+vmaf/*-vmaf-log.json
+vmaf/*-vmaf-data.txt
+vmaf/*-plot.png

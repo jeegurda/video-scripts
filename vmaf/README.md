@@ -55,5 +55,20 @@ Run from this directory, because the script loads the model from the relative pa
 
 ```bash
 cd vmaf
-./vmaf.sh <file1> <file2>
+./vmaf.sh --distorted encode.mp4 --reference original.mp4
+./vmaf.sh -d encode.mp4 -r original.mp4 -s 0:30 -S 0:30 -t 10
 ```
+
+**Distorted** is the encode being judged; **reference** is the original. The order matters.
+
+| Short | Long                | Default | Meaning                                   |
+| ----- | ------------------- | ------- | ----------------------------------------- |
+| `-d`  | `--distorted`       |         | Distorted video                           |
+| `-r`  | `--reference`       |         | Reference video                           |
+| `-s`  | `--distorted-start` | `1:00`  | Start offset in the distorted video       |
+| `-S`  | `--reference-start` | `1:00`  | Start offset in the reference video       |
+| `-t`  | `--duration`        | `30`    | Length in seconds of the compared segment |
+| `-n`  | `--name`            | `1`     | Prefix for the output files               |
+| `-h`  | `--help`            |         | Show usage                                |
+
+Outputs are written to `<name>-vmaf-log.json`, `<name>-vmaf-data.txt` and `<name>-plot.png` (for example `1-vmaf-log.json`), so files for the same run sort together.
