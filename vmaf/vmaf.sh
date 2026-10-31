@@ -5,7 +5,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
-required_commands=(ffmpeg jq gnuplot)
+required_commands=(ffmpeg-vmaf jq gnuplot)
 missing_commands=()
 
 for command_name in "${required_commands[@]}"; do
@@ -32,7 +32,7 @@ out_json="vmaf-log-${name}.json"
 out_txt="vmaf-data-${name}.txt"
 out_png="plot-${name}.png"
 
-ffmpeg -i "$file1" -i "$file2" -ss $start1 -t $duration -lavfi libvmaf=model="path=vmaf_v0.6.1.json:log_path=${out_json}:log_fmt=json" -f null -
+ffmpeg-vmaf -i "$file1" -i "$file2" -ss $start1 -t $duration -lavfi libvmaf=model="path=vmaf_v0.6.1.json:log_path=${out_json}:log_fmt=json" -f null -
 
 jq -r '.frames[] | "\(.frameNum) \(.metrics.vmaf)"' "$out_json" >"$out_txt"
 
