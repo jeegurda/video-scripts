@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // @ts-check
 import { spawn } from 'child_process'
 import { join, parse } from 'path'

@@ -3,7 +3,7 @@
 # set -e
 
 dir=$1
-suffix="-x265-params pools=12"
+suffix="-x265-params pools=20"
 
 if [ -z "$1" ]; then
   echo "Error: no path set"
@@ -20,36 +20,31 @@ trap handle_signal SIGINT
 mkdir -p "${dir}/converted"
 mkdir -p "${dir}/source"
 
-total_files=$(find "${dir}" -maxdepth 1 -type f ! -name ".*" | wc -l)
-
+total_files=$(find "${dir}" -maxdepth 1 -type f ! -name ".*" ! -name "_*" | wc -l)
 progress=0
 
-for file in "${dir}"/*; do
-  if [ -d "$file" ]; then
-    continue
-  fi
-
+while IFS= read -r -d '' file <&3; do
   base_file=$(basename "$file")
-
-  if [[ $base_file == .* ]]; then
-    continue
-  fi
 
   out_file="${dir}/converted/${base_file%.*}.mp4"
 
+  ((progress++))
+  echo -e "\e[34mProcessing $progress/$total_files: $base_file\e[0m"
+
   ffmpeg -i "$file" -c:v libx265 -crf 25 -loglevel info $suffix "$out_file"
+  ffmpeg_status=$?
 
   if $interrupted; then
     printf "\e[34mInterrupted by SIGINT\e[0m\n"
-    rm "$out_file"
+    rm -f "$out_file"
     break
   fi
 
-  mv "$file" "${dir}/source/"
+  if [ $ffmpeg_status -eq 0 ]; then
+    mv -i "$file" "${dir}/source/"
+  fi
 
-  ((progress++))
-
-  echo -e "\e[34mProcessed $progress/$total_files\e[0m"
-done
+  echo -e "\e[34mCompleted $progress/$total_files\e[0m"
+done 3< <(find "${dir}" -maxdepth 1 -type f ! -name ".*" ! -name "_*" -print0)
 
 echo "All files have been processed."

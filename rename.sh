@@ -2,18 +2,37 @@
 
 set -e
 
-if [ -z "$1" ]; then
-  echo "Error: no path set"
+DIRECTORY_PATH=""
+PREFIX=""
+POSTFIX=""
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --prefix)
+      PREFIX="$2"
+      shift 2
+      ;;
+    --postfix)
+      POSTFIX="$2"
+      shift 2
+      ;;
+    *)
+      if [ -z "$DIRECTORY_PATH" ]; then
+        DIRECTORY_PATH="$1"
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [ -z "$DIRECTORY_PATH" ]; then
+  echo "Usage: $0 <directory_path> [--prefix PREFIX] [--postfix POSTFIX]"
   exit 1
 fi
 
-DIRECTORY_PATH=$1
-PREFIX="___ - "
-POSTFIX=""
-
 declare -A replacements
 replacements=(
-  ["___"]=""
+  ["____"]=""
 )
 
 cd "$DIRECTORY_PATH" || exit 1
@@ -21,6 +40,10 @@ cd "$DIRECTORY_PATH" || exit 1
 name_changed=false
 
 for file in *; do
+  if [ -d "$file" ]; then
+    continue
+  fi
+
   newfile="${PREFIX}${file}${POSTFIX}"
 
   for key in "${!replacements[@]}"; do
@@ -43,6 +66,10 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   for file in *; do
+    if [ -d "$file" ]; then
+      continue
+    fi
+
     newfile="${PREFIX}${file}${POSTFIX}"
 
     for key in "${!replacements[@]}"; do
@@ -50,7 +77,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 
     if [[ "$file" != "$newfile" ]]; then
-      mv -i -- "$file" "$newfile"
+      mv -i -- "$file" "$newfile" || echo "Skipped: $file"
     fi
   done
 fi
