@@ -5,6 +5,20 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
+required_commands=(ffmpeg jq gnuplot)
+missing_commands=()
+
+for command_name in "${required_commands[@]}"; do
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    missing_commands+=("$command_name")
+  fi
+done
+
+if [ "${#missing_commands[@]}" -gt 0 ]; then
+  echo "Error: required command(s) not found: ${missing_commands[*]}" >&2
+  exit 1
+fi
+
 file1="$1"
 file2="$2"
 
