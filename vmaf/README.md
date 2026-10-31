@@ -71,4 +71,4 @@ cd vmaf
 | `-n`  | `--name`            | `1`     | Prefix for the output files               |
 | `-h`  | `--help`            |         | Show usage                                |
 
-Outputs are written to `<name>-vmaf-log.json`, `<name>-vmaf-data.txt` and `<name>-plot.png` (for example `1-vmaf-log.json`), so files for the same run sort together.
+Outputs are written to `<name>-vmaf-log.json`, `<name>-vmaf-data.txt` and `<name>-plot.png` (for example `1-vmaf-log.json`), so files for the same run sort together. Run `./clean.sh` to delete all of them.
